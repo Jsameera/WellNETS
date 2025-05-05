@@ -27,45 +27,30 @@
     }
 
     /* — Container — */
-    .container {
-      width: 100%;
-      max-width: 400px;
-    }
+    .container { width: 100%; max-width: 400px; }
 
     /* — App Header — */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 20px;
     }
     .app-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: flex; align-items: center; gap: 8px;
     }
     .app-title img.logo {
-      height: 32px;
-      width: auto;
+      height: 32px; width: auto;
     }
     .app-title .title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--primary-green);
+      font-size: 1.5rem; font-weight: 600; color: var(--primary-green);
     }
     .app-title .version {
-      font-size: 1rem;
-      color: #666;
-      margin-left: 4px;
+      font-size: 1rem; color: #666; margin-left: 4px;
     }
     .header .icons {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 12px;
     }
     .header .icons span {
-      font-size: 1.25rem;
-      cursor: pointer;
+      font-size: 1.25rem; cursor: pointer;
     }
 
     /* — Dashboard Card — */
@@ -77,63 +62,48 @@
       margin-bottom: 20px;
     }
     .alert {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 16px;
-      color: #fff;
-      background: #ff6b6b;
-      visibility: hidden;
-      opacity: 0;
+      color: white; background: #ff6b6b;
+      visibility: hidden; opacity: 0;
       transition: opacity 0.3s, visibility 0.3s;
     }
-    .alert.active {
-      visibility: visible;
-      opacity: 1;
-    }
+    .alert.active { visibility: visible; opacity: 1; }
     .alert-icon { font-size: 1.25rem; margin-right: 8px; }
     .alert-text { font-size: 1.125rem; font-weight: 600; }
 
     .details { padding: 16px; }
     .detail {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      font-size: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; font-size: 1rem;
     }
     .detail:last-child { margin-bottom: 0; }
     .label { font-size: 1rem; }
     .value { font-size: 1rem; font-weight: 600; }
     .unit { margin-left: 4px; color: #666; }
-
-    /* motion icon */
+    .icon { margin-left: 4px; font-size: 1.25rem; vertical-align: middle; }
     .motion-icon {
-      height: 1.25rem;
-      margin-left: 8px;
-      vertical-align: middle;
+      height: 1.25rem; margin-left: 8px; vertical-align: middle;
     }
 
-    /* — Recent Alerts Inline — */
-    .recent-alerts {
+    /* — Recent Activity Inline — */
+    .recent-activity {
       background: var(--card-bg);
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       overflow: hidden;
     }
-    .recent-alerts-header {
+    .recent-activity-header {
       padding: 12px 16px;
-      font-size: 1.125rem;
-      font-weight: 600;
+      font-size: 1.125rem; font-weight: 600;
       border-bottom: 1px solid #eee;
     }
     .recent-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+      list-style: none; margin: 0; padding: 0;
     }
     .recent-list li {
       display: grid;
-      grid-template-columns: 
+      grid-template-columns:
         minmax(0,1fr) /* date/time */
         auto auto     /* heart icon + val */
         auto auto     /* lung icon + val */
@@ -145,7 +115,42 @@
       font-size: 1rem;
     }
     .recent-list li:last-child { border-bottom: none; }
-    .recent-list .icon { font-size: 1.25rem; }
+
+    /* — Modal Previous Alerts (unchanged) — */
+    .alerts-panel {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      display: flex; justify-content: center; align-items: center;
+      visibility: hidden; opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s 0.3s;
+    }
+    .alerts-panel.active {
+      visibility: visible; opacity: 1; transition: opacity 0.3s, visibility 0s;
+    }
+    .panel-content {
+      background: var(--card-bg);
+      border-radius: 16px;
+      width: 90%; max-width: 400px; max-height: 80%; overflow-y: auto;
+      padding: 16px; transform: translateX(100%);
+      transition: transform 0.3s;
+    }
+    .alerts-panel.active .panel-content { transform: translateX(0); }
+    .panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .panel-header h2 {
+      font-size: 1.25rem; font-weight: 500;
+    }
+    .close-icon { font-size: 1.5rem; cursor: pointer; }
+    #alertsList {
+      list-style: none; padding: 0;
+    }
+    #alertsList li {
+      padding: 12px; border-bottom: 1px solid #eee; cursor: pointer;
+    }
+    #alertsList li:last-child { border-bottom: none; }
+    #alertsList li:hover { background: #f9f9f9; }
   </style>
 </head>
 
@@ -178,16 +183,14 @@
         <div class="detail">
           <span class="label">Heart Rate</span>
           <span class="value">
-            <span id="heartRate">--</span>
-            <span class="unit">bpm</span>
+            <span id="heartRate">--</span><span class="unit">bpm</span>
             <span class="icon">❤️</span>
           </span>
         </div>
         <div class="detail">
           <span class="label">Respiration Rate</span>
           <span class="value">
-            <span id="respRate">--</span>
-            <span class="unit">breaths/min</span>
+            <span id="respRate">--</span><span class="unit">breaths/min</span>
             <span class="icon">🫁</span>
           </span>
         </div>
@@ -199,14 +202,15 @@
       </div>
     </div>
 
-    <!-- Recent Alerts Inline -->
-    <div class="recent-alerts">
-      <div class="recent-alerts-header">Recent Alerts</div>
+    <!-- Recent Activity Inline -->
+    <div class="recent-activity">
+      <div class="recent-activity-header">Recent Activity</div>
       <ul id="recentList" class="recent-list"></ul>
     </div>
+
   </div>
 
-  <!-- (Optional) Modal Past-Alerts Panel left unchanged -->
+  <!-- Modal Previous Alerts -->
   <div id="alertsPanel" class="alerts-panel">
     <div class="panel-content">
       <div class="panel-header">
@@ -218,13 +222,8 @@
   </div>
 
   <script>
-    // — Data & Helpers —
-    const initialAlert = {
-      time: new Date(),
-      heartRate: 78,
-      respRate: 17,
-      motion: 'Normal'
-    };
+    // — Initial alert & dummy past alerts for modal —
+    const initialAlert = { time: new Date(), heartRate: 78, respRate: 17, motion: 'Normal' };
     const dummyAlerts = [
       { time: new Date('2025-05-04T18:00'), heartRate: 78,  respRate: 17, motion:'Normal'  },
       { time: new Date('2025-05-03T15:15'), heartRate:115, respRate: 22, motion:'Abnormal'},
@@ -232,6 +231,8 @@
       { time: new Date('2025-04-30T17:20'), heartRate:112, respRate: 24, motion:'Abnormal'},
       { time: new Date('2025-04-28T14:10'), heartRate:120, respRate: 25, motion:'Normal'  }
     ];
+
+    // — Format helper —
     function formatDateTime(d) {
       return d.toLocaleString([], {
         month:'short', day:'numeric', year:'numeric',
@@ -239,37 +240,41 @@
       });
     }
 
-    // — Populate Main Dashboard —
+    // — Populate main dashboard —
     function populateDetails(a) {
       document.getElementById('dateTime').textContent  = formatDateTime(a.time);
       document.getElementById('heartRate').textContent = a.heartRate;
       document.getElementById('respRate').textContent  = a.respRate;
       document.getElementById('motion').textContent    = a.motion;
-      // Adjust pulse speed
+      // adjust pulse
       document.documentElement.style.setProperty(
-        '--heart-pulse-duration',  (60/a.heartRate).toFixed(2)+'s'
+        '--heart-pulse-duration', (60/a.heartRate).toFixed(2)+'s'
       );
       document.documentElement.style.setProperty(
-        '--resp-pulse-duration',   (60/a.respRate).toFixed(2)+'s'
+        '--resp-pulse-duration', (60/a.respRate).toFixed(2)+'s'
       );
     }
 
-    // — Build Inline Recent Alerts —
+    // — Build “Recent Activity” (5 entries at 15-min intervals) —
     const recentList = document.getElementById('recentList');
-    dummyAlerts.forEach(a => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <span>${formatDateTime(a.time)}</span>
-        <span class="icon">❤️</span><span>${a.heartRate}</span>
-        <span class="icon">🫁</span><span>${a.respRate}</span>
-        <img src="motion.png" class="motion-icon" alt="Motion"><span>${a.motion}</span>
-      `;
-      recentList.appendChild(li);
-    });
+    (function buildRecent() {
+      const now = new Date();
+      for (let i=0; i<5; i++) {
+        const t = new Date(now.getTime() - i*15*60*1000);
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${formatDateTime(t)}</span>
+          <span class="icon">❤️</span><span>${initialAlert.heartRate}bpm</span>
+          <span class="icon">🫁</span><span>${initialAlert.respRate}b/m</span>
+          <img src="motion.png" class="motion-icon"><span>${initialAlert.motion}</span>
+        `;
+        recentList.appendChild(li);
+      }
+    })();
 
-    // — Build Modal Past-Alerts (unchanged) —
+    // — Build modal “Previous Alerts” —
     const alertsList = document.getElementById('alertsList');
-    dummyAlerts.forEach((a,i) => {
+    dummyAlerts.forEach(a => {
       const li = document.createElement('li');
       li.textContent = formatDateTime(a.time);
       li.onclick = () => {
@@ -280,7 +285,7 @@
       alertsList.appendChild(li);
     });
 
-    // — Event Handlers —
+    // — Event handlers —
     document.getElementById('bellIcon').onclick = () =>
       document.getElementById('alertsPanel').classList.add('active');
     document.getElementById('closeAlerts').onclick = () =>
@@ -291,19 +296,20 @@
       document.getElementById('alertsPanel').classList.remove('active');
     };
 
-    // — Theme Toggle —
+    // — Theme toggle —
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.onclick = () => {
       document.body.classList.toggle('dark-mode');
       themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')?'on':'off');
+      localStorage.setItem('darkMode',
+        document.body.classList.contains('dark-mode') ? 'on' : 'off');
     };
     if (localStorage.getItem('darkMode')==='on') {
       document.body.classList.add('dark-mode');
       themeToggle.textContent = '☀️';
     }
 
-    // — Initial Render —
+    // — Initial render —
     populateDetails(initialAlert);
   </script>
 </body>
