@@ -14,11 +14,7 @@
     }
 
     /* — Base Reset & Body — */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-color);
@@ -36,7 +32,7 @@
       max-width: 400px;
     }
 
-    /* — App Title/Header — */
+    /* — App Header — */
     .header {
       display: flex;
       justify-content: space-between;
@@ -78,7 +74,7 @@
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       overflow: hidden;
-      transition: background 0.3s, box-shadow 0.3s;
+      margin-bottom: 20px;
     }
     .alert {
       display: flex;
@@ -94,18 +90,10 @@
       visibility: visible;
       opacity: 1;
     }
-    .alert-icon {
-      font-size: 1.25rem;
-      margin-right: 8px;
-    }
-    .alert-text {
-      font-size: 1.125rem;
-      font-weight: 600;
-    }
+    .alert-icon { font-size: 1.25rem; margin-right: 8px; }
+    .alert-text { font-size: 1.125rem; font-weight: 600; }
 
-    .details {
-      padding: 16px;
-    }
+    .details { padding: 16px; }
     .detail {
       display: flex;
       justify-content: space-between;
@@ -113,94 +101,60 @@
       margin-bottom: 12px;
       font-size: 1rem;
     }
-    .detail:last-child {
-      margin-bottom: 0;
-    }
-    .label {
-      font-size: 1rem;
-    }
-    .value {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    .unit {
-      font-weight: 400;
-      margin-left: 4px;
-      color: #666;
-    }
-    /* motion icon in detail row */
+    .detail:last-child { margin-bottom: 0; }
+    .label { font-size: 1rem; }
+    .value { font-size: 1rem; font-weight: 600; }
+    .unit { margin-left: 4px; color: #666; }
+
+    /* motion icon */
     .motion-icon {
       height: 1.25rem;
-      width: auto;
       margin-left: 8px;
       vertical-align: middle;
     }
 
-    /* — Heart & Respire Animation (unchanged) — */
-    .heart-icon, .resp-icon {
-      display: inline-block;
-      animation: pulse 1s ease-in-out infinite;
-    }
-    .resp-icon { animation-duration: 1s; }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
-    }
-
-    /* — Past Alerts Panel (unchanged) — */
-    .alerts-panel {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex; justify-content: center; align-items: center;
-      visibility: hidden; opacity: 0;
-      transition: opacity 0.3s, visibility 0.3s 0.3s;
-    }
-    .alerts-panel.active {
-      visibility: visible; opacity: 1;
-      transition: opacity 0.3s, visibility 0s;
-    }
-    .panel-content {
+    /* — Recent Alerts Inline — */
+    .recent-alerts {
       background: var(--card-bg);
       border-radius: 16px;
-      width: 90%; max-width: 400px;
-      max-height: 80%; overflow-y: auto;
-      padding: 16px;
-      transform: translateX(100%);
-      transition: transform 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      overflow: hidden;
     }
-    .alerts-panel.active .panel-content {
-      transform: translateX(0);
+    .recent-alerts-header {
+      padding: 12px 16px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      border-bottom: 1px solid #eee;
     }
-    .panel-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px;
+    .recent-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
-    .panel-header h2 {
-      font-size: 1.25rem; font-weight: 500;
+    .recent-list li {
+      display: grid;
+      grid-template-columns: 
+        minmax(0,1fr) /* date/time */
+        auto auto     /* heart icon + val */
+        auto auto     /* lung icon + val */
+        auto auto;    /* motion icon + text */
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-bottom: 1px solid #eee;
+      font-size: 1rem;
     }
-    .close-icon {
-      font-size: 1.5rem; cursor: pointer;
-    }
-    #alertsList {
-      list-style: none; padding: 0;
-    }
-    #alertsList li {
-      padding: 12px; border-bottom: 1px solid #eee; cursor: pointer;
-    }
-    #alertsList li:last-child { border-bottom: none; }
-    #alertsList li:hover { background: #f9f9f9; }
+    .recent-list li:last-child { border-bottom: none; }
+    .recent-list .icon { font-size: 1.25rem; }
   </style>
 </head>
+
 <body>
   <div class="container">
 
-    <!-- — App Header — -->
+    <!-- App Header -->
     <div class="header">
       <div class="app-title">
-        <!-- your logo.jpg should live alongside index.html -->
         <img src="logo.jpg" alt="WellNETS logo" class="logo" id="homeLogo" />
         <span class="title">WellNETS</span>
         <span class="version">v1.0</span>
@@ -211,13 +165,12 @@
       </div>
     </div>
 
-    <!-- — Dashboard Card — -->
+    <!-- Dashboard Card -->
     <div class="dashboard-card">
       <div id="alertBanner" class="alert">
         <span class="alert-icon">⚠️</span>
         <span class="alert-text">Fall Alert</span>
       </div>
-
       <div class="details">
         <div class="detail">
           <span id="dateTime" class="label">--</span>
@@ -227,7 +180,7 @@
           <span class="value">
             <span id="heartRate">--</span>
             <span class="unit">bpm</span>
-            <span class="heart-icon">❤️</span>
+            <span class="icon">❤️</span>
           </span>
         </div>
         <div class="detail">
@@ -235,20 +188,25 @@
           <span class="value">
             <span id="respRate">--</span>
             <span class="unit">breaths/min</span>
-            <span class="resp-icon">🫁</span>
+            <span class="icon">🫁</span>
           </span>
         </div>
         <div class="detail">
           <span class="label">Motion</span>
           <span class="value" id="motion">--</span>
-          <!-- your motion.png should live alongside index.html -->
           <img src="motion.png" alt="Motion icon" class="motion-icon" />
         </div>
       </div>
     </div>
+
+    <!-- Recent Alerts Inline -->
+    <div class="recent-alerts">
+      <div class="recent-alerts-header">Recent Alerts</div>
+      <ul id="recentList" class="recent-list"></ul>
+    </div>
   </div>
 
-  <!-- — Past Alerts Panel — -->
+  <!-- (Optional) Modal Past-Alerts Panel left unchanged -->
   <div id="alertsPanel" class="alerts-panel">
     <div class="panel-content">
       <div class="panel-header">
@@ -260,84 +218,92 @@
   </div>
 
   <script>
-    // Initial alert
+    // — Data & Helpers —
     const initialAlert = {
       time: new Date(),
       heartRate: 78,
       respRate: 17,
       motion: 'Normal'
     };
-
-    // Dummy past alerts
     const dummyAlerts = [
-      { id: 1, time: new Date('2025-05-01T02:45:00'), heartRate: 115, respRate: 22, motion: 'Abnormal' },
-      { id: 2, time: new Date('2025-04-13T19:23:00'), heartRate: 110, respRate: 26, motion: 'Abnormal' },
-      { id: 3, time: new Date('2025-03-20T14:34:00'), heartRate: 112, respRate: 24, motion: 'Abnormal' }
+      { time: new Date('2025-05-04T18:00'), heartRate: 78,  respRate: 17, motion:'Normal'  },
+      { time: new Date('2025-05-03T15:15'), heartRate:115, respRate: 22, motion:'Abnormal'},
+      { time: new Date('2025-05-02T13:45'), heartRate:110, respRate: 26, motion:'Abnormal'},
+      { time: new Date('2025-04-30T17:20'), heartRate:112, respRate: 24, motion:'Abnormal'},
+      { time: new Date('2025-04-28T14:10'), heartRate:120, respRate: 25, motion:'Normal'  }
     ];
-
     function formatDateTime(d) {
       return d.toLocaleString([], {
-        month: 'short', day: 'numeric', year: 'numeric',
-        hour: 'numeric', minute: 'numeric'
+        month:'short', day:'numeric', year:'numeric',
+        hour:'numeric', minute:'numeric'
       });
     }
 
-    function populateDetails(alert) {
-      document.getElementById('dateTime').textContent  = formatDateTime(alert.time);
-      document.getElementById('heartRate').textContent = alert.heartRate;
-      document.getElementById('respRate').textContent  = alert.respRate;
-      document.getElementById('motion').textContent    = alert.motion;
-
-      // adjust pulse speeds
-      document.documentElement.style.setProperty('--heart-pulse-duration', (60/alert.heartRate).toFixed(2)+'s');
-      document.documentElement.style.setProperty('--resp-pulse-duration',  (60/alert.respRate).toFixed(2)+'s');
+    // — Populate Main Dashboard —
+    function populateDetails(a) {
+      document.getElementById('dateTime').textContent  = formatDateTime(a.time);
+      document.getElementById('heartRate').textContent = a.heartRate;
+      document.getElementById('respRate').textContent  = a.respRate;
+      document.getElementById('motion').textContent    = a.motion;
+      // Adjust pulse speed
+      document.documentElement.style.setProperty(
+        '--heart-pulse-duration',  (60/a.heartRate).toFixed(2)+'s'
+      );
+      document.documentElement.style.setProperty(
+        '--resp-pulse-duration',   (60/a.respRate).toFixed(2)+'s'
+      );
     }
 
-    function showAlertDetails(alert) {
-      populateDetails(alert);
-      document.getElementById('alertBanner').classList.add('active');
-    }
-
-    // build past alerts list
-    const alertsList = document.getElementById('alertsList');
-    dummyAlerts.forEach(alert => {
+    // — Build Inline Recent Alerts —
+    const recentList = document.getElementById('recentList');
+    dummyAlerts.forEach(a => {
       const li = document.createElement('li');
-      li.textContent = formatDateTime(alert.time);
-      li.addEventListener('click', () => {
-        showAlertDetails(alert);
+      li.innerHTML = `
+        <span>${formatDateTime(a.time)}</span>
+        <span class="icon">❤️</span><span>${a.heartRate}</span>
+        <span class="icon">🫁</span><span>${a.respRate}</span>
+        <img src="motion.png" class="motion-icon" alt="Motion"><span>${a.motion}</span>
+      `;
+      recentList.appendChild(li);
+    });
+
+    // — Build Modal Past-Alerts (unchanged) —
+    const alertsList = document.getElementById('alertsList');
+    dummyAlerts.forEach((a,i) => {
+      const li = document.createElement('li');
+      li.textContent = formatDateTime(a.time);
+      li.onclick = () => {
+        populateDetails(a);
+        document.getElementById('alertBanner').classList.add('active');
         document.getElementById('alertsPanel').classList.remove('active');
-      });
+      };
       alertsList.appendChild(li);
     });
 
-    // toggle panel
-    document.getElementById('bellIcon').onclick = () => {
+    // — Event Handlers —
+    document.getElementById('bellIcon').onclick = () =>
       document.getElementById('alertsPanel').classList.add('active');
-    };
-    document.getElementById('closeAlerts').onclick = () => {
+    document.getElementById('closeAlerts').onclick = () =>
       document.getElementById('alertsPanel').classList.remove('active');
-    };
-
-    // home logo click resets
     document.getElementById('homeLogo').onclick = () => {
       document.getElementById('alertBanner').classList.remove('active');
       populateDetails(initialAlert);
       document.getElementById('alertsPanel').classList.remove('active');
     };
 
-    // theme toggle
+    // — Theme Toggle —
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.onclick = () => {
       document.body.classList.toggle('dark-mode');
       themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
       localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')?'on':'off');
     };
-    if (localStorage.getItem('darkMode') === 'on') {
+    if (localStorage.getItem('darkMode')==='on') {
       document.body.classList.add('dark-mode');
       themeToggle.textContent = '☀️';
     }
 
-    // initial render
+    // — Initial Render —
     populateDetails(initialAlert);
   </script>
 </body>
